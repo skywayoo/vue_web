@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Add this to <head> -->
+    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+</head>
+<!-- Load Vue followed by BootstrapVue -->
+<script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
+<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+<body>
+    <b-container id="app">
+        <h1 :style=baseObject> {{message}} </h1>
+        <b-row>
+            <b-col cols="3">
+                <b-button variant="primary" v-on:click="start">start</b-button>
+            </b-col>
+            <b-col cols="3">
+                <b-button variant="danger" v-on:click="reset">reset</b-button>
+            </b-col>
+            <b-col cols="4">
+                <b-form-input v-model="path" placeholder="Enter json path"></b-form-input>
+                <br>
+                <b-button variant="success" v-on:click="read_json">read json</b-button>
+                <b-button variant="warning" v-on:click="append_json">append json</b-button>
+                <b-button variant="info" v-on:click="delete_json">delete json</b-button>
+            </b-col>
+        </b-row>
+        <b-row>
+            <h4>讀取路徑: {{path}}</h4>
+            <b-col cols="12"></b-col>
+            <h4>JSON txt : {{json_data}}</h4>
+        </b-row>
+        <b-row>
+            <b-list-group v-for="lst in list_example">
+                <b-list-group-item>{{lst}}</b-list-group-item>
+            </b-list-group>
+        </b-row>
+
+        <h2>table item</h2>
+        <b-row>
+            <b-table striped :items="items" :fields="fields"></b-table>
+        </b-row>
+        <b-progress :value="bar_val" :max="bar_max" :precision="2" show-progress animated></b-progress>
+        <b-form>
+
+        </b-form>
+    </b-container>
+</body>
+
+<script>
+    var js_data = '{"A": { "name": "John", "age": 30, "city": "New York" }, \
+                    "B": { "name": "DOG", "age": 22, "city": "Taiwan" }}'
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue.js!',
+            baseObject: {
+                color: 'blue'
+            },
+            json_data: null,
+            path: null,
+            fields: ['name', "age", "city"],
+            items: [
+                { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
+                { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
+                { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
+                { age: 38, first_name: 'Jami', last_name: 'Carney' }
+            ],
+            list_example: ['e04', 'su3', 'xl3', 'g,s94', '2k6', 'xu4'],
+            bar_val :75,
+            bar_max:100
+        },
+        methods: {
+            start() {
+                this.message = '我被按了拉操妳ㄉ';
+                if (this.baseObject.color == "red") {
+                    this.message = '我又被按了拉幹';
+                    this.baseObject.color = "green";
+                }
+                else {
+                    this.message = '我被按了拉操妳ㄉ';
+                    this.baseObject.color = "red";
+                }
+            },
+            reset() {
+                this.message = 'hello motherfucker~';
+                this.baseObject.color = "blue";
+            },
+            read_json() {
+                console.log("path=", this.path);
+                var obj = JSON.parse(js_data);
+                this.json_data = obj;
+                console.log(obj);
+                var new_df = [];
+                for (usr in obj) {
+                    console.log(obj[usr]);
+                    new_df.push({ "name": obj[usr]["name"], "age": obj[usr]["age"], "city": obj[usr]["city"] });
+                };
+                console.log("new_df =", new_df);
+                this.items = new_df;
+                this.bar_val = 20;
+            },
+            append_json() {
+                var new_df = [];
+                for (i in this.items) {
+                    console.log("i=", i);
+                    console.log("items=", this.items[i]);
+                    new_df.push(this.items[i]);
+                };
+
+                var obj = JSON.parse(js_data);
+
+                for (usr in obj) {
+                    console.log(obj[usr]);
+                    new_df.push({ "name": obj[usr]["name"], "age": obj[usr]["age"], "city": obj[usr]["city"] });
+                };
+                console.log("append json=", new_df);
+                this.items = new_df;
+                this.bar_val = this.bar_val + 10;
+            },
+            delete_json() {
+                this.items = [];
+                this.bar_val = 0;
+            }
+        }
+    });
+</script>
+
+</html>
