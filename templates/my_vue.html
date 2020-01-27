@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Add this to <head> -->
+    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+
+</head>
+<!-- Load Vue followed by BootstrapVue -->
+<script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
+<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+
+
+<body>
+    <b-container id="app">
+        <h1> ${message} </h1>
+        <b-row>
+            <b-form-input v-model="message" placeholder="Enter your name"></b-form-input>
+            <b-button @click="test_get" variant="primary">GET</b-button>
+            <b-button @click="test_post" variant="success">POST</b-button>
+            <b-button @click="test_json" variant="outline-primary">JSON</b-button>
+        </b-row>
+        <h2> 輸出結果 : ${res_txt}</h2>
+    </b-container>
+</body>
+
+<script>
+    var vm = new Vue({
+        el: '#app',
+        delimiters: ['${', '}'],
+        data: {
+            message: ' ',
+            res_txt: 'null',
+        },
+        methods: {
+            test_json() {
+                let URL = '/post_json';
+                console.log("JSONNNNNNNNNNNNNNNNNNNNNNNN");
+                this.$http.jsonp(URL,{params: {'data':this.res_txt}, callback: 'callback'}).then(response => {
+                    console.log("post url", URL, "success !!!!");
+                }, response => {
+                    // error callback
+                });
+            },
+            test_post() {
+                let URL = '/post_submit';
+                this.$http.post(URL, { name: "測試名稱", url: "http://www.chpte04.com" }, { emulateJSON: true }).then(response => {
+                    console.log("post value", response.body);
+                    console.log("post url", URL, "success !!!!");
+                }, response => {
+                    // error callback
+                });
+            },
+            test_get() {
+                console.log("e04");
+                // GET /someUrl
+                let URL = "/result/" + this.message;
+                this.$http.get(URL).then(response => {
+                    console.log("get url", URL, "sucess !!!!");
+                    console.log("get value", response);
+                    this.res_txt = response.body['res_txt'];
+                    console.log("this.res_txt", this.res_txt);
+                    // success callback
+                }, response => {
+                    // error callback
+                });
+            }
+        }
+    });
+</script>
+
+</html>
