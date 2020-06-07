@@ -1,0 +1,28 @@
+import numpy as np
+
+def calculate(price, nums):
+    price_in, price_out = price
+    if len(nums) == 1: nums = [nums[0], nums[0]]
+    nums_in, nums_out = nums
+    fee = 0.001425
+    unit = 1000
+    #buy in 
+    tax_in = price_in * nums_in * fee * unit
+    discount_tax_in =  tax_in * 0.3 if (tax_in * 0.3 > 20) else 20
+    cost_in = price_in * nums_in * unit + discount_tax_in
+    #sell out
+    tax_out = price_out * nums_out * fee * unit
+    discount_tax_out =  tax_out * 0.3 if (tax_out * 0.3 > 20) else 20
+    trans_tax = price_out * nums_out * unit * 0.003
+    trans_tax_daytrading = trans_tax * 0.5
+    income = price_out * nums_out * unit - discount_tax_out - trans_tax 
+    income_daytrading = price_out * nums_out * unit - discount_tax_out - trans_tax_daytrading 
+    profit = np.array([income - cost_in, income_daytrading - cost_in]).astype(int)
+    return profit
+
+if __name__ == "__main__":
+    price = [9.29, 20]
+    nums = [40]
+    today = calculate(price, nums)
+    print(today)
+
